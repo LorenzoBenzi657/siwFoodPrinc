@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Navbar</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg fixed-top navbarprinc">
+        <div class="container">
+            <a class="navbar-brand siwfood" th:href="${ruolo == 'ADMIN' || ruolo == 'CUOCO'} ? @{/home} : @{/}">SiwFood</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/cuochi}">Cuochi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/ricette}">Ricette</a>
+                    </li>
+                    <li class="nav-item" th:if="${ruolo == 'ADMIN'}">
+                        <a class="nav-link" th:href="@{/admin/managementCuochi}">Gestione Cuochi</a>
+                    </li>
+                    <li class="nav-item" th:if="${ruolo == 'ADMIN'}">
+                        <a class="nav-link" th:href="@{/managementRicetta}">Gestione Ricette</a>
+                    </li>
+                    <li class="nav-item" th:if="${ruolo == 'CUOCO'}">
+                        <a class="nav-link" th:href="@{/cuoco/mieRicette}">Le Mie Ricette</a>
+                    </li>
+                    <li class="nav-item" th:if="${ruolo == 'CUOCO'}">
+                        <a class="nav-link" th:href="@{/editCuoco/{id}(id=${cuocoCorrente.id})}">Gestione Profilo</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item" th:if="${ruolo != 'ADMIN' && ruolo != 'CUOCO'}">
+                        <a class="nav-link" th:href="@{/login}">Accedi</a>
+                    </li>
+                    <li class="nav-item" th:if="${ruolo == 'ADMIN' || ruolo == 'CUOCO'}">
+                        <a class="nav-link" th:href="@{/logout}">Esci</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</body>
+
+</html>

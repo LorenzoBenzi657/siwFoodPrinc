@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Nuovo Ingrediente</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body class="bg-light-green">
+    <!-- Include la navbar -->
+    <div th:replace="~{fragments/navbarAdmin :: navbarAdmin}"></div>
+
+    <div class="container py-5">
+        <h1 class="text-center">Aggiungi Nuovo Ingrediente</h1>
+        <form th:action="@{/ingredienti/add}" th:object="${ingrediente}" method="post" class="mt-4">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" class="form-control" th:field="*{nome}" required>
+            </div>
+            <input type="hidden" name="cuocoId" th:value="${cuocoId}">
+            <button type="submit" class="btn btn-primary">Salva</button>
+            <a th:href="@{/admin/addRecipe/{id}(id=${cuocoId})}" class="btn btn-secondary">Annulla</a>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-orange text-center py-3">
+        <div class="container">
+            <span class="text-black">&copy; 2023 SiwFood Admin. Tutti i diritti riservati.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

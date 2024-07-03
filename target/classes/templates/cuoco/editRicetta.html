@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Modifica Ricetta</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Include la navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="mt-5 container princbox py-5 scroll-container">
+        <h2 class="text-center">Modifica Ricetta</h2>
+        <form action="/admin/editRicetta" method="post" enctype="multipart/form-data" class="form-container" onsubmit="reloadImage()">
+            <input type="hidden" id="ricetta-id" name="id" th:value="${ricetta.id}">
+            <div class="form-group">
+                <label for="nome">Nome Ricetta</label>
+                <input type="text" class="form-control" id="nome" name="nome" th:value="${ricetta.nome}" required>
+            </div>
+            <div class="form-group">
+                <label for="descrizione">Descrizione</label>
+                <textarea class="form-control" id="descrizione" name="descrizione" required th:text="${ricetta.descrizione}"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cuoco">Cuoco</label>
+                <input type="text" class="form-control" id="cuoco" name="cuoco" th:value="${ricetta.cuoco.nome}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="immagine-attuale">Immagine Attuale</label><br>
+                <img id="immagine-attuale" th:src="@{/${ricetta.immagine}}" alt="Immagine Ricetta" class="img-thumbnail" style="max-width: 200px;">
+            </div>
+            <div class="form-group">
+                <label for="immagine">Nuova Immagine</label>
+                <input type="file" class="form-control" id="immagine" name="immagine">
+            </div>
+
+            <h3>Ingredienti</h3>
+            <div id="ingredienti-container">
+                <div th:each="rigaRicetta, iterStat : ${ricetta.ingredienti}">
+                    <div class="form-group ingrediente">
+                        <label for="ingrediente-nome">Nome Ingrediente</label>
+                        <select class="form-control ingrediente-nome" name="ingredienti[${iterStat.index}].ingredienteId" required>
+                            <option th:each="ingrediente : ${ingredienti}" th:value="${ingrediente.id}" th:text="${ingrediente.nome}" th:selected="${ingrediente.id == rigaRicetta.ingrediente.id}"></option>
+                        </select>
+                        <label for="quantita">Quantità</label>
+                        <input type="text" class="form-control quantita" name="ingredienti[${iterStat.index}].quantita" th:value="${rigaRicetta.quantita}" required>
+                        <button type="button" class="btn-remove" onclick="removeIngrediente(this)">x</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary" onclick="addIngrediente()">Aggiungi Ingrediente</button>
+            <button type="button" class="btn btn-link-custom" onclick="mostraFormIngrediente()">Aggiungi Nuovo Ingrediente</button><br><br>
+
+            <button type="submit" class="btn btn-primary">Modifica Ricetta</button>
+        </form>
+
+        <div id="form-ingrediente" class="form-container" style="display: none;">
+            <h2>Aggiungi Nuovo Ingrediente</h2>
+            <form id="nuovoIngredienteForm" onsubmit="aggiungiIngrediente(event)">
+                <div class="form-group">
+                    <label for="nuovo-ingrediente-nome">Nome Ingrediente</label>
+                    <input type="text" class="form-control" id="nuovo-ingrediente-nome" name="nome" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Aggiungi Ingrediente</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let ingredienteIndex = /*[[${#lists.size(ricetta.ingredienti)}]]*/ 0;
+        let ingredientiDisponibili = [];
+
+        function addIngrediente() {
+            const container = document.getElementById('ingredienti-container');
+            const newIngrediente = document.createElement('div');
+            newIngrediente.className = 'form-group ingrediente';
+            newIngrediente.innerHTML = `
+                <label for="ingrediente-nome">Nome Ingrediente</label>
+                <select class="form-control ingrediente-nome" name="ingredienti[${ingredienteIndex}].ingredienteId" required>
+                    ${ingredientiDisponibili.map(ing => `<option value="${ing.id}">${ing.nome}</option>`).join('')}
+                </select>
+                <label for="quantita">Quantità</label>
+                <input type="text" class="form-control quantita" name="ingredienti[${ingredienteIndex}].quantita" required>
+                <button type="button" class="btn-remove" onclick="removeIngrediente(this)">x</button>
+            `;
+            container.appendChild(newIngrediente);
+            ingredienteIndex++;
+        }
+
+        function removeIngrediente(button) {
+            const ingredienteDiv = button.parentElement;
+            ingredienteDiv.remove();
+        }
+
+        function mostraFormIngrediente() {
+            const formIngrediente = document.getElementById('form-ingrediente');
+            formIngrediente.style.display = formIngrediente.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function aggiungiIngrediente(event) {
+            event.preventDefault();
+            const form = document.getElementById('nuovoIngredienteForm');
+            const formData = new FormData(form);
+            fetch('/admin/addIngrediente', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    ingredientiDisponibili.push(data.ingrediente);
+                    form.reset();
+                    mostraFormIngrediente();
+                    aggiornaListaIngredienti();
+                } else {
+                    console.error('Errore:', data.message);
+                }
+            })
+            .catch(error => console.error('Errore:', error));
+        }
+
+        function popolaIngredienti(selectElement) {
+            selectElement.innerHTML = ingredientiDisponibili.map(ing => `<option value="${ing.id}">${ing.nome}</option>`).join('');
+        }
+
+        function aggiornaListaIngredienti() {
+            const selectElements = document.getElementsByClassName('ingrediente-nome');
+            for (const select of selectElements) {
+                popolaIngredienti(select);
+            }
+        }
+
+        function aggiungiIngredienteAlSelezionatore(ingrediente) {
+            const selectElements = document.getElementsByClassName('ingrediente-nome');
+            for (const select of selectElements) {
+                const option = document.createElement('option');
+                option.value = ingrediente.id;
+                option.textContent = ingrediente.nome;
+                select.appendChild(option);
+            }
+        }
+
+        fetch('/admin/getIngredienti')
+            .then(response => response.json())
+            .then(data => {
+                ingredientiDisponibili = data;
+                aggiornaListaIngredienti();
+            })
+            .catch(error => console.error('Errore nel recupero degli ingredienti:', error));
+
+        function reloadImage() {
+            const imgElement = document.getElementById('immagine-attuale');
+            const timestamp = new Date().getTime();
+            imgElement.src = imgElement.src.split('?')[0] + '?t=' + timestamp;
+        }
+    </script>
+</body>
+</html>

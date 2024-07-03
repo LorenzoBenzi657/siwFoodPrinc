@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Il Mio Sito</title>
+	<link rel="stylesheet" href="/css/style.css">
+	<!-- Bootstrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<!-- Include la navbar -->
+	<div th:replace="~{fragments/navbar :: navbar}" class="navbarprinc"></div>
+
+	<!-- Content Section -->
+	<div class="container princbox py-5 scroll-container">
+		<h1 class="text-center">Gestione Ricette</h1>
+		<div class="row mb-4">
+			<div class="col text-center">
+				<a th:href="@{/formNewRicetta(cuocoId=${cuocoCorrente.id})}" class="btn btn-success">Aggiungi Nuova Ricetta</a>
+				<input type="hidden" id="referer" name="referer" th:value="${referer}">
+			</div>
+		</div>
+		<div class="row table-container">
+			<div class="col-md-12">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Nome</th>
+							<th>Cuoco</th>
+							<th>Descrizione</th>
+							<th>Azioni</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="ricetta : ${cuocoCorrente.ricette}">
+							<td th:text="${ricetta.nome}">Nome</td>
+							<td th:text="${ricetta.cuoco.nome}">Cuoco</td>
+							<td th:text="${ricetta.descrizione}">Descrizione</td>
+							<td>
+								<a th:href="@{/editRicetta/{ricettaId}(ricettaId=${ricetta.id})}"
+									class="btn btn-sm btn-primary">Modifica</a>
+								<a th:href="@{/cuoco/ricette/delete/{id}(id=${ricetta.id})}"
+									class="btn btn-sm btn-danger">Elimina</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer class="footer bg-orange text-center py-3">
+		<div class="container">
+			<span class="text-black">&copy; 2023 SiwFood Admin. Tutti i diritti riservati.</span>
+		</div>
+	</footer>
+
+	<!-- Bootstrap JS and dependencies -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

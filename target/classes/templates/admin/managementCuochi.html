@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Sito</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Include la navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content Section -->
+    <div class="container princbox">
+        <h1 class="text-center">Gestione Cuochi</h1>
+        <div class="text-center mb-4">
+            <a href="/admin/formNewCuoco" class="btn btn-sm btn-success">Aggiungi Nuovo Cuoco</a>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Cognome</th>
+                            <th>Data di Nascita</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cuoco : ${cuochi}">
+                            <td th:text="${cuoco.nome}">Nome</td>
+                            <td th:text="${cuoco.cognome}">Cognome</td>
+                            <td th:text="${cuoco.dataDiNascita}">Data di Nascita</td>
+                            <td>
+                                <a th:href="@{/editCuoco/{id}(id=${cuoco.id})}" class="btn btn-sm btn-primary">Modifica</a>
+                                <a th:href="@{/cuochi/delete/{id}(id=${cuoco.id})}" class="btn btn-sm btn-danger">Elimina</a>
+								<a th:href="@{/formNewRicetta(cuocoId=${cuoco.id})}" class="btn btn-sm btn-success">Aggiungi Ricetta</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

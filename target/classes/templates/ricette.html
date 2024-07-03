@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Ricette</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Include la navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content Section -->
+    <div class="container py-5 princbox princScroll">
+        <h1 class="text-center">Le Nostre Ricette</h1>
+        <div th:if="${#lists.isEmpty(ricette)}" class="text-center">
+            <p>Al momento non sono ancora disponibili ricette</p>
+            <i class="fas fa-frown fa-3x"></i>
+        </div>
+        <div class="text-center" th:if="${!#lists.isEmpty(ricette)}">
+            <div th:each="ricetta : ${ricette}" class="cuoco-container">
+                <img th:src="@{${ricetta.immagine}}" class="cuoco-image rounded-circle" alt="Immagine Ricetta">
+                <div class="dropdown-menu">
+                    <p th:text="${ricetta.nome}">Nome Ricetta</p>
+                    <p th:text="'Cuoco: ' + ${ricetta.cuoco.nome} + ' ' + ${ricetta.cuoco.cognome}">Nome Cuoco</p>
+                    <p th:text="'Descrizione: ' + ${ricetta.descrizione}">Descrizione</p>
+                    <a th:href="@{/ricetta/{id}(id=${ricetta.id})}" class="btn btn-sm btn-outline-secondary">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

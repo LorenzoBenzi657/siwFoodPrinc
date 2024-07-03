@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Modifica Cuoco</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+	<!-- Include la navbar -->
+	<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+	<!-- Content Section -->
+	<div class="mt-5 container princbox py-5 scroll-container">
+		<h2 class="text-center">Modifica Cuoco</h2>
+		<form th:action="@{/updateCuoco}" th:object="${cuoco}" method="post" enctype="multipart/form-data"
+			class="login-form">
+			<input type="hidden" th:field="*{id}" />
+			<input type="hidden" th:name="referer" th:value="${referer}" />
+			<div class="form-group">
+				<label for="nome">Nome</label>
+				<input type="text" class="form-control" id="nome" th:field="*{nome}">
+			</div>
+			<div class="form-group">
+				<label for="cognome">Cognome</label>
+				<input type="text" class="form-control" id="cognome" th:field="*{cognome}">
+			</div>
+			<div class="form-group">
+				<label for="immagine">Nuova Immagine</label>
+				<input type="file" class="form-control" id="immagine" name="immagine">
+			</div>
+			<div class="form-group">
+				<label for="descrizione">Descrizione</label>
+				<input type="text" class="form-control" id="descrizione" th:field="*{descrizione}">
+			</div>
+			<button type="submit" class="btn btn-primary">Salva Modifiche</button>
+		</form>
+	</div>
+
+	<!-- Bootstrap JS and dependencies -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
